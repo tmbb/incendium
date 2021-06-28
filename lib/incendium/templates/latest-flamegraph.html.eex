@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="<%= @routes_module.static_path(@conn, "/css/incendium.css") %>"/>
+  <script src="<%= @routes_module.static_path(@conn, "/js/incendium.js") %>" charset="utf-8"></script>
+
+  <title>Incendium Flamegraph</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header clearfix">
+      <nav>
+        <div class="pull-right">
+          <form class="form-inline" id="form">
+            <a class="btn" href="javascript: resetZoom();">Reset zoom</a>
+            <a class="btn" href="javascript: clear();">Clear</a>
+            <div class="form-group">
+              <input type="text" class="form-control" id="term">
+            </div>
+            <a class="btn btn-primary" href="javascript: search();">Search</a>
+          </form>
+        </div>
+      </nav>
+      <h3 class="text-muted">Incendium <small>(built on d3-flame-graph)</small></h3>
+    </div>
+    <div id="chart">
+    </div>
+    <hr>
+    <div id="details">
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var data = <%= {:safe, @latest_hierarchy} %>;
+    var flameGraph = d3.flamegraph()
+      .width(960)
+      .cellHeight(18)
+      .transitionDuration(750)
+      .minFrameSize(5)
+      .transitionEase(d3.easeCubic)
+      .sort(true)
+      .title("")
+      .onClick(onClick)
+      .differential(false)
+      .selfValue(false);
+
+    var details = document.getElementById("details");
+    flameGraph.setDetailsElement(details);
+    // Example of how to set fixed chart height
+    // flameGraph.height(540);
+
+    d3.select("#chart")
+      .datum(data)
+      .call(flameGraph);
+
+    document.getElementById("form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      search();
+    });
+
+    function search() {
+      var term = document.getElementById("term").value;
+      flameGraph.search(term);
+    }
+
+    function clear() {
+      document.getElementById('term').value = '';
+      flameGraph.clear();
+    }
+
+    function resetZoom() {
+      flameGraph.resetZoom();
+    }
+
+    function onClick(d) {
+      console.info("Clicked on " + d.data.name);
+    }
+  </script>
+</body>
+
+</html>
