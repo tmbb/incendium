@@ -1,13 +1,23 @@
 defmodule Incendium.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @url "https://github.com/tmbb/incendium"
+
   def project do
     [
       app: :incendium,
-      version: "0.1.0",
-      elixir: "~> 1.12",
+      description: "Easy flamegraphs for your web application",
+      version: @version,
+      source_url: @url,
+      homepage: @url,
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: aliases(),
+      package: [
+        license: "MIT"
+      ],
       docs: [
         extras: ["doc_extra/pages/Example flamegraph.md"],
         assets: "doc_extra/assets/"
@@ -31,6 +41,12 @@ defmodule Incendium.MixProject do
       {:jason, "~> 1.2"},
       {:eflame, "~> 1.0"},
       {:ex_doc, "~> 0.23", only: :dev}
+    ]
+  end
+
+  defp aliases() do
+    [
+      publish: "run scripts/release.exs"
     ]
   end
 end

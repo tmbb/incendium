@@ -1,0 +1,3 @@
+# Changelog
+
+<!-- %% CHANGELOG_ENTRIES %% -->
