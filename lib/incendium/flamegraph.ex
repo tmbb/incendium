@@ -9,12 +9,16 @@ defmodule Incendium.Flamegraph do
   end
 
   def file_to_stacks(path) do
+    # A stack file consists of a number of sampled stack frames.
+    # Each stack frame is separated from the following one by a newline.
+    # Function calls in the stack frame are separated by semicolons.
     File.read!(path)
     |> String.split("\n")
     |> Enum.map(fn line -> String.split(line, ";") end)
   end
 
   def stacks_to_hierarchy(stacks) do
+    # d3-flamegraph expects a pretty specific format for the data.
     level =
       Enum.reduce(stacks, %{}, fn
         [], acc ->

@@ -1,0 +1,2 @@
+var data_<%= @id %> = <%= {:safe, @hierarchy} %>;
+incendiumFlamegraph("<%= @id %>", data_<%= @id %>)

@@ -1,7 +1,11 @@
 defmodule Incendium do
-  @moduledoc """
-  Incendium is a way of ...
-  """
+  readme_part =
+    "README.md"
+    |> File.read!()
+    |> String.split("<!-- ex_doc -->")
+    |> Enum.at(1)
+
+  @moduledoc readme_part
 
   alias Incendium.Storage
 

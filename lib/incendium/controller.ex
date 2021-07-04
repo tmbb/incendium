@@ -38,6 +38,16 @@ defmodule Incendium.Controller do
     quote do
       use Phoenix.Controller
 
+      # Recompile the controller if the Incendium assets have changed
+      require Incendium.Assets,
+        as: Incendium_Assets__JUST_A_WAY_OF_ENSURING_ASSETS_DONT_BECOME_STALE,
+        warn: false
+
+      # Recompile the controller if the files in the Phoenix app's priv dir
+      # are changed (to ovewrite those same files)
+      # @external_resource "priv/static/js/incendium.js"
+      @external_resource "priv/static/css/incendium.css"
+
       def latest_flamegraph(conn, params) do
         Incendium.Controller.latest_flamegraph(conn, params, unquote(routes_module))
       end
@@ -51,14 +61,21 @@ defmodule Incendium.Controller do
       |> Flamegraph.file_to_hierarchy()
       |> Jason.encode!()
 
+    id = random_id()
+
     body =
       Incendium.View.render("latest-flamegraph.html",
         conn: conn,
+        id: id,
         routes_module: routes_module,
-        latest_hierarchy: latest_hierarchy
+        hierarchy: latest_hierarchy
       )
       |> Phoenix.HTML.Safe.to_iodata()
 
     Plug.Conn.send_resp(conn, 200, body)
+  end
+
+  defp random_id() do
+    to_string(Enum.map(1..32, fn _ -> Enum.random(?a..?z) end))
   end
 end
