@@ -16,7 +16,10 @@ defmodule Incendium.MixProject do
       deps: deps(),
       aliases: aliases(),
       package: [
-        license: "MIT"
+        licenses: ["MIT"],
+        links: %{
+          "GitHub" => @url
+        }
       ],
       docs: [
         extras: ["doc_extra/pages/Example flamegraph.md"],
