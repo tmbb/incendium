@@ -1,0 +1,19 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Disk space usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for scenario_data <- @scenarios_data do %>
+      <% usage = Map.fetch!(@disk_space_usage, scenario_data.name) %>
+      <tr>
+        <td class="text-left">
+          <a href="#<%= scenario_data.slug %>" class="text-reset"><%= scenario_data.name %></a>
+        </td>
+        <td><%= usage %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

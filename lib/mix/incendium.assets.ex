@@ -1,4 +1,4 @@
-defmodule Mix.Incendium.Assets do
+defmodule Mix.Tasks.Incendium.Assets do
   use Mix.Task
 
   @impl Mix.Task

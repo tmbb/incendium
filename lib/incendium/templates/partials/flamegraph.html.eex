@@ -1,0 +1,21 @@
+<%# Maybe scale the flamegraph widths %>
+<% multiplier = if @flamegraph_widths_to_scale,
+                    do: @scenario_data.flamegraph_width_multiplier,
+                    else: 1 %>
+<% statistics = Map.fetch!(@scenario, :run_time_data).statistics %>
+<% average = format_property(statistics.average, @units.run_time) %>
+<% std_dev = format_property(statistics.std_dev, @units.run_time) %>
+
+<h3 id="<%= @scenario_data.slug %>" class="h5 pb-2 bt-2">
+  <%= @scenario_data.name %>
+  <small class="text-muted"><%= average %> (±<%= std_dev %>)</small>
+</h3>
+
+<script type="text/javascript"
+        data-flame-graph-width-multiplier="<%= multiplier %>">
+  <%= flamegraph_js(
+        id: @scenario_data.id,
+        hierarchy: @scenario_data.hierarchy
+      ) %>
+</script>
+<hr/>

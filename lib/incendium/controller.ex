@@ -29,6 +29,7 @@ defmodule Incendium.Controller do
 
     app_priv = :code.priv_dir(otp_app)
 
+
     static_js_dest = Path.join([app_priv, "static", "assets", "incendium.js"])
     static_css_dest = Path.join([app_priv, "static", "assets", "incendium.css"])
 

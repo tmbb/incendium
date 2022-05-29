@@ -3,6 +3,13 @@
 
 Easy profiling for your Phoenix controller actions (and other functions) using [flamegraphs](http://www.brendangregg.com/flamegraphs.html).
 
+#### Example flamegraph
+
+<link rel="stylesheet" href="doc_extra/assets/incendium.css" />
+<script src="doc_extra/assets/incendium.js" charset="utf-8"></script>
+
+<script type="text/javascript" src="doc_extra/assets/incendium_flamegraph_hkctthqlqhcubcsgrazymmvaldzllxbq.js"></script>
+
 ## Installation
 
 The package can be installed
@@ -11,7 +18,7 @@ by adding `incendium` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:incendium, "~> 0.1.0"}
+    {:incendium, "~> x.y.z"}
   ]
 end
 ```
@@ -34,7 +41,40 @@ Fortunately there is a very good javascrtip library to generate flamegraphs: [d3
 By reading `:eflame` stacktrace samples and converting them into a format that `d3-flame-graph` can understand, we can render the flamegraph in a webpage.
 That way, instead of the manual steps above you can just visit an URL in your web application.
 
-## Usage
+## Batch usage (usage with benchmarks)
+
+Incendium can be used to run benchmarks with integrated profiling data (in the form of flamegraphs).
+It uses [Benchee]() under the hood, and the API is actually quite similar to Benchee's.
+
+It provides a single function, namely `Incendium.run/2`, which takes the same arguments as `Benchee.run/2`, plus some incendium-specific ones. The main difference is that the suite title is a required keyword argument instead of an optional one.
+
+An example:
+
+```elixir
+defmodule Incendium.Benchmarks.Example do
+  defp map_fun(i) do
+    [i, i * i]
+  end
+
+  def run() do
+    list = Enum.to_list(1..10_000)
+
+    Incendium.run(%{
+      "flat_map" => fn -> Enum.flat_map(list, &map_fun/1) end,
+      "map.flatten" => fn -> list |> Enum.map(&map_fun/1) |> List.flatten() end
+      },
+      title: "Example",
+      incendium_flamegraph_widths_to_scale: true
+    )
+  end
+end
+
+Incendium.Benchmarks.Example.run()
+```
+
+The output of the script above can be found [here](https://hexdocs.pm/incendium/0.3.0/assets/Example.html).
+
+## Interactive Usage (intgrated with a Phoenix web application)
 
 To use `incendium` in your web application, you need to follow these steps:
 
@@ -43,7 +83,7 @@ To use `incendium` in your web application, you need to follow these steps:
 ```elixir
 def deps do
   [
-    {:incendium, "~> 0.1.0"}
+    {:incendium, "~> 0.2.0"}
   ]
 end
 ```
@@ -112,3 +152,5 @@ In the future we may support better options such as sampling profilers.
 Each time you run a profiled function, a new stacktrace will be generated.
 Stacktraces are not currently saves, you can only access the latest one.
 In the future we might add a persistence layer that stores a number of stacktraces instead of keeping just the last one.
+
+[Here](https://hexdocs.pm/incendium/example-flamegraph.html) you can find an example flamegraph with explanations about how to interact with it .

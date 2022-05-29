@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+
+  <%= if @embed do %>
+    <style>
+    <%= {:safe, Assets.all_benchee_css()} %>
+    .border-top { border-top: 1px solid #e5e5e5; }
+    .border-bottom { border-bottom: 1px solid #e5e5e5; }
+    .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+    </style>
+
+    <script type="text/javascript" charset="utf-8">
+    <%= {:safe, Assets.all_benchee_js()} %>
+    </script>
+
+  <% else %>
+    <link rel="stylesheet" href="assets/benchee-incendium.css"/>
+    <script src="assets/benchee-incendium.js" charset="utf-8"></script>
+  <% end %>
+
+  <title><%= @incendium_suite.configuration.title %></title>
+</head>
+
+<body>
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Benchee ❤ Incendium</h5>
+    <nav class="my-2 my-md-0 mr-md-3">
+      <a class="p-2 text-dark" href="https://github.com/bencheeorg/benchee">Benchee</a>
+      <a class="p-2 text-dark" href="https://github.com/tmbb/incendium">Incendium</a>
+    </nav>
+  </div>
+
+  <header>
+    <div class="pt-md-2 pb-md-2 mx-auto text-center">
+      <h1 class="display-5"><%= @incendium_suite.configuration.title %></h1>
+      <p class="lead">Benchmark suite run with Benchee. Flamegraphs drawn using Incendium</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Statistics</h2>
+
+    <p>Performance data for code run <strong>without</strong> the profiler.</p>
+    <%= data_table_html(
+          scenarios: @original_suite.scenarios,
+          units: @original_units,
+          scenarios_data: @incendium_scenarios_data
+        ) %>
+
+    <p>Performance data for code run <strong>with</strong> the profiler:</p>
+    <%= data_table_html(
+          scenarios: @incendium_suite.scenarios,
+          units: @incendium_units,
+          scenarios_data: @incendium_scenarios_data
+        ) %>
+
+    <h2>Scenarios</h2>
+
+    <p>
+    Incendium generates one flamegraph per benchmark scenario.
+    Each flamegraph is generated from the stackframes collected wach time the scenario was run.
+    <%= if @flamegraph_widths_to_scale do %>
+    The width of each flamegraph is proportional to the median run time for the scenario
+    (i.e. a shorter flamegraph corresponds to a faster scenario).
+    <% end %>
+    </p>
+
+    <%= for {scenario, scenario_data} <- List.zip([
+            @original_suite.scenarios,
+            @incendium_scenarios_data
+          ]) do %>
+      <%= flamegraph_html(
+            scenario_data: scenario_data,
+            scenario: scenario,
+            flamegraph_widths_to_scale: @flamegraph_widths_to_scale,
+            units: @original_units
+          ) %>
+    <% end %>
+
+    <h2>System information</h2>
+
+    <p>Information about the system where the benchmarks were run.</p>
+
+    <%= system_info_html(system: @original_suite.system) %>
+
+    <h2>Disk space usage</h2>
+
+    <p>
+      Disk space used when profiling the functions.
+      Disk space is used by Incendium (actually by <code>eflame</code>)
+      to write the stack frames for the profiles functions.
+    </p>
+
+    <%= disk_space_usage_html(
+          scenarios_data: @incendium_scenarios_data,
+          disk_space_usage: @disk_space_usage
+        ) %>
+
+
+  </div>
+</body>
+
+</html>

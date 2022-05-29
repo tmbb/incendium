@@ -5,10 +5,11 @@ defmodule Incendium.View do
 
   alias Incendium.Assets
 
-  @external_resource "#{__DIR__}/templates/latest-flamegraph.html.eex"
+  @external_resource "#{__DIR__}/templates/view/latest-flamegraph.html.eex"
+  @external_resource "#{__DIR__}/templates/view/flamegraph.js.eex"
 
   use Phoenix.View,
-    root: "#{__DIR__}/templates",
+    root: "#{__DIR__}/templates/view",
     path: ""
 
   def extra_css() do
