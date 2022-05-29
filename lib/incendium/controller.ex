@@ -29,8 +29,8 @@ defmodule Incendium.Controller do
 
     app_priv = :code.priv_dir(otp_app)
 
-    static_js_dest = Path.join([app_priv, "static", "js", "incendium.js"])
-    static_css_dest = Path.join([app_priv, "static", "css", "incendium.css"])
+    static_js_dest = Path.join([app_priv, "static", "assets", "incendium.js"])
+    static_css_dest = Path.join([app_priv, "static", "assets", "incendium.css"])
 
     File.cp!(Assets.css_path(), static_css_dest)
     File.cp!(Assets.js_path(), static_js_dest)
@@ -45,8 +45,8 @@ defmodule Incendium.Controller do
 
       # Recompile the controller if the files in the Phoenix app's priv dir
       # are changed (to ovewrite those same files)
-      # @external_resource "priv/static/js/incendium.js"
-      @external_resource "priv/static/css/incendium.css"
+      @external_resource "priv/static/assets/incendium.js"
+      @external_resource "priv/static/assets/incendium.css"
 
       def latest_flamegraph(conn, params) do
         Incendium.Controller.latest_flamegraph(conn, params, unquote(routes_module))

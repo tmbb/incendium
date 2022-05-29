@@ -38,8 +38,8 @@ defmodule Incendium.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:phoenix_html, "~> 2.0"},
-      {:phoenix, "~> 1.4"},
+      {:phoenix_html, "~> 3.0"},
+      {:phoenix, "~> 1.6"},
       {:decorator, "~> 1.4"},
       {:jason, "~> 1.2"},
       {:eflame, "~> 1.0"},
